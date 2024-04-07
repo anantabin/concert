@@ -19,6 +19,9 @@ public class ConcertService {
 
     public Concert updateConcertTicketAvailability(Long concertId, int orderQuantity) {
         Concert concert = getConcertById(concertId);
+        if (!concert.isWithinSellingPeriod()) {
+            throw new TicketNotAvailableException("Tickets is not available for purchase");
+        }
         int availableTickets = concert.getTotalTickets() - concert.getTotalTicketsSold();
         if (orderQuantity > availableTickets) {
             throw new TicketNotAvailableException("Not enough tickets available for the concert");

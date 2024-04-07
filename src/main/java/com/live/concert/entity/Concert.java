@@ -10,6 +10,7 @@ import jakarta.persistence.Version;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -54,14 +55,22 @@ public class Concert {
 
     public GetConcertResponse toConcertResponse() {
         GetConcertResponse response = new GetConcertResponse();
-        response.setId(this.id);
-        response.setName(this.name);
-        response.setDescription(this.description);
-        response.setTotalTickets(this.totalTickets);
-        response.setTotalTicketsSold(this.totalTicketsSold);
-        response.setDateTime(this.dateTime.getTime());
-        response.setStartSellingOn(this.startSellingOn.getTime());
-        response.setFinishSellingOn(this.finishSellingOn.getTime());
+        response.setId(id);
+        response.setName(name);
+        response.setDescription(description);
+        response.setTotalTickets(totalTickets);
+        response.setTotalTicketsSold(totalTicketsSold);
+        response.setDateTime(dateTime.getTime());
+        response.setStartSellingOn(startSellingOn.getTime());
+        response.setFinishSellingOn(finishSellingOn.getTime());
         return response;
+    }
+
+    public boolean isWithinSellingPeriod() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startSellingDateTime = startSellingOn.toLocalDateTime();
+        LocalDateTime finishSellingDateTime = finishSellingOn.toLocalDateTime();
+
+        return !now.isBefore(startSellingDateTime) && !now.isAfter(finishSellingDateTime);
     }
 }

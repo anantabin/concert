@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,11 +38,13 @@ class ConcertServiceTest {
     private ConcertService concertService;
 
     @Test
-    public void testUpdateConcertTicketAvailability_EnoughTicketsAvailable_ShouldReturnUpdatedConcert() {
+    public void testUpdateConcertTicketAvailability_EnoughTicketsAvailable_ShouldReturnSuccess() {
         Concert concert = new Concert();
         concert.setId(1L);
         concert.setTotalTickets(100);
         concert.setTotalTicketsSold(50);
+        concert.setStartSellingOn(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
+        concert.setFinishSellingOn(Timestamp.valueOf(LocalDateTime.now().plusDays(3)));
 
         when(concertRepository.findById(anyLong())).thenReturn(Optional.of(concert));
         when(concertRepository.save(any())).thenReturn(concert);
@@ -51,11 +55,30 @@ class ConcertServiceTest {
     }
 
     @Test
+    public void testUpdateConcertTicketAvailability_NotInSellingPeriod_ShouldThrowException() {
+        Concert concert = new Concert();
+        concert.setId(1L);
+        concert.setTotalTickets(100);
+        concert.setTotalTicketsSold(50);
+        concert.setStartSellingOn(Timestamp.valueOf(LocalDateTime.now().plusDays(1)));
+        concert.setFinishSellingOn(Timestamp.valueOf(LocalDateTime.now().plusDays(2)));
+
+
+        when(concertRepository.findById(anyLong())).thenReturn(Optional.of(concert));
+
+        assertThrows(TicketNotAvailableException.class, () -> {
+            concertService.updateConcertTicketAvailability(1L, 20);
+        });
+    }
+
+    @Test
     public void testUpdateConcertTicketAvailability_NotEnoughTicketsAvailable_ShouldThrowException() {
         Concert concert = new Concert();
         concert.setId(1L);
         concert.setTotalTickets(100);
         concert.setTotalTicketsSold(90);
+        concert.setStartSellingOn(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
+        concert.setFinishSellingOn(Timestamp.valueOf(LocalDateTime.now().plusDays(3)));
 
         when(concertRepository.findById(anyLong())).thenReturn(Optional.of(concert));
 
