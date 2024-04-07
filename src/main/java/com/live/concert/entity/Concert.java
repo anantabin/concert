@@ -1,13 +1,16 @@
 package com.live.concert.entity;
 
+import com.live.concert.contract.GetConcertResponse;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -46,4 +49,28 @@ public class Concert {
 
     @Column(name = "updated_by")
     private String updatedBy;
+
+    @Version
+    private int version;
+
+    public GetConcertResponse toConcertResponse() {
+        GetConcertResponse response = new GetConcertResponse();
+        response.setId(id);
+        response.setName(name);
+        response.setDescription(description);
+        response.setTotalTickets(totalTickets);
+        response.setTotalTicketsSold(totalTicketsSold);
+        response.setDateTime(dateTime.getTime());
+        response.setStartSellingOn(startSellingOn.getTime());
+        response.setFinishSellingOn(finishSellingOn.getTime());
+        return response;
+    }
+
+    public boolean isWithinSellingPeriod() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startSellingDateTime = startSellingOn.toLocalDateTime();
+        LocalDateTime finishSellingDateTime = finishSellingOn.toLocalDateTime();
+
+        return !now.isBefore(startSellingDateTime) && !now.isAfter(finishSellingDateTime);
+    }
 }

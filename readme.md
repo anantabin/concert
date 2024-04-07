@@ -23,7 +23,7 @@ List of technologies/libraries used in the project.
 
 - Spring Boot
 - Java
-- Docker 
+- Docker
 - Postgres
 
 ## Features
@@ -45,6 +45,7 @@ List any software or tools that need to be installed.
 - Docker
 
 ### Database Design
+
 ```mermaid
 erDiagram
     Account {
@@ -74,8 +75,9 @@ erDiagram
     }
 
     Ticket_Order {
-        concert_id INT PK "Composite Primary Key"
-        account_id INT PK "Composite Primary Key"
+        id INT PK
+        concert_id INT FK
+        account_id INT FK
         quantity INT
         created_on DATETIME
         created_by VARCHAR
