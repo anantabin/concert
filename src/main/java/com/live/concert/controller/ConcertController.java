@@ -41,9 +41,9 @@ public class ConcertController {
         response.setDescription(concert.getDescription());
         response.setTotalTickets(concert.getTotalTickets());
         response.setTotalTicketsSold(concert.getTotalTicketsSold());
-        response.setDateTime(concert.getDateTime().toLocalDateTime());
-        response.setStartSellingOn(concert.getStartSellingOn().toLocalDateTime());
-        response.setFinishSellingOn(concert.getFinishSellingOn().toLocalDateTime());
+        response.setDateTime(concert.getDateTime().getTime());
+        response.setStartSellingOn(concert.getStartSellingOn().getTime());
+        response.setFinishSellingOn(concert.getFinishSellingOn().getTime());
         return response;
     }
 }
