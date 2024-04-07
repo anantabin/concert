@@ -2,6 +2,7 @@ package com.live.concert.service;
 
 import com.live.concert.entity.Concert;
 import com.live.concert.exception.ConcertNotFoundException;
+import com.live.concert.exception.TicketNotAvailableException;
 import com.live.concert.repository.ConcertRepository;
 import com.live.concert.repository.FilterQuery.ConcertFilterQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,17 @@ import java.time.LocalDate;
 public class ConcertService {
     @Autowired
     private ConcertRepository concertRepository;
+
+    public Concert updateConcertTicketAvailability(Long concertId, int orderQuantity) {
+        Concert concert = getConcertById(concertId);
+        int availableTickets = concert.getTotalTickets() - concert.getTotalTicketsSold();
+        if (orderQuantity > availableTickets) {
+            throw new TicketNotAvailableException("Not enough tickets available for the concert");
+        }
+        concert.setTotalTicketsSold(concert.getTotalTicketsSold() + orderQuantity);
+
+        return concertRepository.save(concert);
+    }
 
     public Concert getConcertById(Long concertId) {
         return concertRepository.findById(concertId)

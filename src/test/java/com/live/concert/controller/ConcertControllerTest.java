@@ -47,7 +47,7 @@ class ConcertControllerTest {
     private ConcertService concertService;
 
     @Test
-    public void testGetConcerts() throws Exception {
+    public void testGetConcerts_withParameter_ShouldReturnSuccess() throws Exception {
 
         when(concertService.filterConcerts(anyString(), any(LocalDate.class), any(LocalDate.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(concerts));
@@ -72,7 +72,7 @@ class ConcertControllerTest {
     }
 
     @Test
-    public void testGetConcert() throws Exception {
+    public void testGetConcert_ShouldReturnSuccess() throws Exception {
         when(concertService.getConcertById(anyLong()))
                 .thenReturn(concert);
 
@@ -92,7 +92,7 @@ class ConcertControllerTest {
     }
 
     @Test
-    public void testGetConcertNotFound() throws Exception {
+    public void testGetConcert_ShouldReturnNotFound4xx() throws Exception {
         when(concertService.getConcertById(anyLong()))
                 .thenThrow(ConcertNotFoundException.class);
 
@@ -103,7 +103,7 @@ class ConcertControllerTest {
     }
 
     @Test
-    public void testGetConcertInternalError() throws Exception {
+    public void testGetConcert_ShouldReturnInternalServerError5xx() throws Exception {
         when(concertService.getConcertById(anyLong()))
                 .thenThrow(RuntimeException.class);
 
@@ -112,7 +112,6 @@ class ConcertControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
                 .andReturn();
     }
-
 
 
 }

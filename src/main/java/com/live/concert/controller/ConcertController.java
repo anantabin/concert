@@ -32,7 +32,7 @@ public class ConcertController {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<GetConcertResponse> concerts = concertService.filterConcerts(name, concertStartDate, concertEndDate, pageable).map(this::mapToGetConcertResponse);
+        Page<GetConcertResponse> concerts = concertService.filterConcerts(name, concertStartDate, concertEndDate, pageable).map(Concert::toConcertResponse);
         return ResponseEntity.ok(concerts);
     }
 
@@ -41,25 +41,12 @@ public class ConcertController {
             @PathVariable long concertId
     ) {
         try {
-            return ResponseEntity.ok(mapToGetConcertResponse(concertService.getConcertById(concertId)));
+            return ResponseEntity.ok(concertService.getConcertById(concertId).toConcertResponse());
         } catch (ConcertNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
-
     }
 
-    private GetConcertResponse mapToGetConcertResponse(Concert concert) {
-        GetConcertResponse response = new GetConcertResponse();
-        response.setId(concert.getId());
-        response.setName(concert.getName());
-        response.setDescription(concert.getDescription());
-        response.setTotalTickets(concert.getTotalTickets());
-        response.setTotalTicketsSold(concert.getTotalTicketsSold());
-        response.setDateTime(concert.getDateTime().getTime());
-        response.setStartSellingOn(concert.getStartSellingOn().getTime());
-        response.setFinishSellingOn(concert.getFinishSellingOn().getTime());
-        return response;
-    }
 }

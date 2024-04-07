@@ -1,10 +1,12 @@
 package com.live.concert.entity;
 
+import com.live.concert.contract.GetConcertResponse;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -46,4 +48,20 @@ public class Concert {
 
     @Column(name = "updated_by")
     private String updatedBy;
+
+    @Version
+    private int version;
+
+    public GetConcertResponse toConcertResponse() {
+        GetConcertResponse response = new GetConcertResponse();
+        response.setId(this.id);
+        response.setName(this.name);
+        response.setDescription(this.description);
+        response.setTotalTickets(this.totalTickets);
+        response.setTotalTicketsSold(this.totalTicketsSold);
+        response.setDateTime(this.dateTime.getTime());
+        response.setStartSellingOn(this.startSellingOn.getTime());
+        response.setFinishSellingOn(this.finishSellingOn.getTime());
+        return response;
+    }
 }
