@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class DataInjector implements ApplicationRunner {
-    Timestamp startSellingDate = Timestamp.valueOf(LocalDateTime.now().plusDays((long) (Math.random() * 30)));
+    Timestamp startSellingDate = Timestamp.valueOf(LocalDateTime.now().minusDays((long) (Math.random() * 5)));
     Timestamp finishSellingDate = Timestamp.valueOf(startSellingDate.toLocalDateTime().plusDays(30));
 
     EasyRandomParameters parameters = new EasyRandomParameters()
