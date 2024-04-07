@@ -9,6 +9,8 @@ public class GetConcertResponse {
     private String description;
     private int totalTickets;
     private int totalTicketsSold;
+
+    // Parse Timestamp to millis
     private Long dateTime;
     private Long startSellingOn;
     private Long finishSellingOn;

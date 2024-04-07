@@ -13,11 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -36,18 +34,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ConcertController.class)
 class ConcertControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private ConcertService concertService;
-
-
     ObjectMapper objectMapper = new ObjectMapper();
     EasyRandomParameters parameters = new EasyRandomParameters();
-
     EasyRandom easyRandom = new EasyRandom(parameters);
     List<Concert> concerts = easyRandom.objects(Concert.class, 1).collect(Collectors.toList());
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private ConcertService concertService;
 
     @Test
     public void testGetConcert() throws Exception {
@@ -68,7 +62,8 @@ class ConcertControllerTest {
         JsonNode jsonNode = objectMapper.readTree(content);
         JsonNode contentNode = jsonNode.get("content");
         List<GetConcertResponse> concertResponses = objectMapper.readValue(contentNode.toString(),
-                new TypeReference<List<GetConcertResponse>>() {});
+                new TypeReference<List<GetConcertResponse>>() {
+                });
 
         assertEquals(1, concertResponses.size());
     }
